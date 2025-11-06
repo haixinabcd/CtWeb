@@ -57,7 +57,13 @@ public class OrderServlet extends HttpServlet {
             return;
         }
 
-        TaskEnd taskEnd=ListData.GetTaskEndOk(task);
+        //TaskEnd taskEnd=ListData.GetTaskEndOk(task);
+        TaskEnd taskEnd= null;
+        try {
+            taskEnd = task.taskEndQueue.take();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (taskEnd!=null) {
             if (taskEnd.processed==-1){
                 response.setContentType("text/html;charset=UTF-8");

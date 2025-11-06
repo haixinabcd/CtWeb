@@ -59,7 +59,7 @@ public class ListData {
         return taskEnd;
     }
 
-    public static String getTask(String taskid){
+    public static String getTaskString(String taskid){
         String taskjson=null;
         int nSize= ListData.taskList.size();
         for(int i=0;i<nSize;i++){
@@ -71,6 +71,20 @@ public class ListData {
         }
         return taskjson;
     }
+
+    public static Task getTask(String taskid){
+        Task retTask=null;
+        int nSize= ListData.taskList.size();
+        for(int i=0;i<nSize;i++){
+            Task task=ListData.taskList.get(i);
+            if (task.taskid.equals(taskid)){
+                retTask= task;
+                break;
+            }
+        }
+        return retTask;
+    }
+
     public static TaskEnd getTaskEnd(String taskid){
         TaskEnd taskEnd= ListData.endMap.get(taskid);
         return taskEnd;

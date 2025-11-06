@@ -95,6 +95,8 @@ public class AiSocketServer{
             if (taskEnd.processed==1000) {
                 taskEnd.taskendstatus=taskProgress.taskendstatus;
                 taskEnd.taskendhead=taskProgress.taskendhead;
+                Task task= ListData.getTask(taskProgress.taskid);
+                task.taskEndQueue.add(taskEnd);
                 isjod.set(false);
                 taskid=null;
             }
