@@ -104,7 +104,7 @@ public class AiSocketServer{
     @OnMessage
     public void onMessage(ByteBuffer bytes, Session session) {
         int len=bytes.remaining();
-        System.out.println("Received binary data: " + len + " bytes");
+        //System.out.println("Received binary data: " + len + " bytes");
         if (taskid!=null) {
             TaskEnd taskEnd = ListData.endMap.get(taskid);
             if (taskEnd != null) {

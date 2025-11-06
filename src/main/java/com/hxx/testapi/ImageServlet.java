@@ -22,7 +22,7 @@ public class ImageServlet extends HttpServlet {
         String imagePath = "/kk.jpg"; // 更改为你的图片路径
         //InputStream in = this.getClass().getResourceAsStream(imagePath);
 
-        FileInputStream in = new FileInputStream("E:\\java\\CtWeb\\src\\main\\webapp\\uploads\\1754740548718_kk.jpg");
+        FileInputStream in = new FileInputStream("D:\\screenshot.png");
 
         if (in == null) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND); // 如果找不到图片，返回404错误
