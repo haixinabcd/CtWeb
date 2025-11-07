@@ -83,10 +83,12 @@ public class AiSocketServer{
             }
             return;
         }
-        TaskEnd taskEnd=ListData.endMap.get(taskProgress.taskid);
+        TaskEnd taskEnd=ListData.getTaskEnd(taskProgress.taskid);
         if (taskEnd!=null){
             taskEnd.processed=taskProgress.processed;
             if (taskEnd.processed==-1){
+                Integer result= 1;
+                taskEnd.taskEndQ.add(result);
                 isjod.set(false);
             }
             if (taskEnd.processed==999) {
@@ -95,8 +97,8 @@ public class AiSocketServer{
             if (taskEnd.processed==1000) {
                 taskEnd.taskendstatus=taskProgress.taskendstatus;
                 taskEnd.taskendhead=taskProgress.taskendhead;
-                Task task= ListData.getTask(taskProgress.taskid);
-                task.taskEndQueue.add(taskEnd);
+                Integer result= 1;
+                taskEnd.taskEndQ.add(result);
                 isjod.set(false);
                 taskid=null;
             }
@@ -108,7 +110,7 @@ public class AiSocketServer{
         int len=bytes.remaining();
         //System.out.println("Received binary data: " + len + " bytes");
         if (taskid!=null) {
-            TaskEnd taskEnd = ListData.endMap.get(taskid);
+            TaskEnd taskEnd = ListData.getTaskEnd(taskid);
             if (taskEnd != null) {
                 if (taskEnd.taskendBS==null){
                     taskEnd.taskendBS=new ByteArrayOutputStream();
@@ -240,7 +242,7 @@ public class AiSocketServer{
                     InputStream reader = null;
                     try {
                         reader = request.getInputStream();
-                        int contentLength=1024*2;
+                        int contentLength=1024*4;
                         byte[] body = new byte[contentLength];
                         int all=0;
                         for(;;){
@@ -265,14 +267,11 @@ public class AiSocketServer{
                 }
                 break;
             }
-            try {
-                Thread.sleep(2 * 1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            return -1;
         }
         return ok;
     }
+
     public  static int  resetjob(int aid){
         int ok=-1;
         for( AiSocketServer aiSocketServer: ListData.wsList){

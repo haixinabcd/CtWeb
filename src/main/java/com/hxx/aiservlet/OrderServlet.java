@@ -48,24 +48,25 @@ public class OrderServlet extends HttpServlet {
                 task.taskuri = task.taskuri + "?" + queryString;
             }
         }
-        int ok=ListData.addTask(task);
-        ok= ListData.sendTask(task,request);
+
+        TaskEnd taskEnd=ListData.addTaskEnd(task);
+        int ok= ListData.sendTask(task,request);
         if  (ok==-1){
+            ListData.removeTaskEnd(taskEnd.taskid);
             response.setContentType("text/html;charset=UTF-8");
             PrintWriter out = response.getWriter();
             out.println("没有可用的服务");
             return;
         }
 
-        //TaskEnd taskEnd=ListData.GetTaskEndOk(task);
-        TaskEnd taskEnd= null;
         try {
-            taskEnd = task.taskEndQueue.take();
+            Integer endQ = taskEnd.taskEndQ.take();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         if (taskEnd!=null) {
             if (taskEnd.processed==-1){
+                ListData.removeTaskEnd(taskEnd.taskid);
                 response.setContentType("text/html;charset=UTF-8");
                 PrintWriter out = response.getWriter();
                 out.println("服务异常");
@@ -86,6 +87,7 @@ public class OrderServlet extends HttpServlet {
                     out.close();
                 }
             }
+            ListData.removeTaskEnd(taskEnd.taskid);
         }
     }
     @Override

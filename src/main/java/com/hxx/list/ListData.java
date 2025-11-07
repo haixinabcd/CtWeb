@@ -21,79 +21,79 @@ public class ListData {
         //new Thread(taskThread).start();
     }
 
-    public static int addTask(Task task) {
+    public static TaskEnd addTaskEnd(Task task) {
         task.taskid = task.uid + "_" + System.currentTimeMillis() + "_" + nIndex;
-        ListData.taskList.add(task);
 
         TaskEnd taskEnd = new TaskEnd();
         taskEnd.taskid = task.taskid;
         taskEnd.processed = 0;
-        ListData.endMap.put(taskEnd.taskid, taskEnd);
+        ListData.taskEndMap.put(taskEnd.taskid, taskEnd);
         nIndex++;
-        return 0;
+        return taskEnd;
     }
 
     public static int sendTask(Task task, HttpServletRequest request) {
         int ok=AiSocketServer.send_task(task,request);
         return ok;
     }
-
-
-    public static TaskEnd GetTaskEndOk(Task task){
-        TaskEnd taskEnd=ListData.endMap.get(task.taskid);
-        if (taskEnd!=null) {
-            while (true) {
-                try {
-                    Thread.sleep(1 * 1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+    /*
+        public static TaskEnd GetTaskEndOk(Task task){
+            TaskEnd taskEnd=ListData.endMap.get(task.taskid);
+            if (taskEnd!=null) {
+                while (true) {
+                    try {
+                        Thread.sleep(1 * 1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if (taskEnd.processed == -1) {
+                        break;
+                    }
+                    if (taskEnd.processed == 1000) {
+                        break;
+                    }
                 }
-                if (taskEnd.processed == -1) {
+            }
+            return taskEnd;
+        }
+
+        public static String getTaskString(String taskid){
+            String taskjson=null;
+            int nSize= ListData.taskList.size();
+            for(int i=0;i<nSize;i++){
+                Task task=ListData.taskList.get(i);
+                if (task.taskid.equals(taskid)){
+                    taskjson= JSON.toJSONString(task);
                     break;
                 }
-                if (taskEnd.processed == 1000) {
+            }
+            return taskjson;
+        }
+
+
+        public static Task getTask(String taskid){
+            Task retTask=null;
+            int nSize= ListData.taskList.size();
+            for(int i=0;i<nSize;i++){
+                Task task=ListData.taskList.get(i);
+                if (task.taskid.equals(taskid)){
+                    retTask= task;
                     break;
                 }
             }
+            return retTask;
         }
-        return taskEnd;
-    }
-
-    public static String getTaskString(String taskid){
-        String taskjson=null;
-        int nSize= ListData.taskList.size();
-        for(int i=0;i<nSize;i++){
-            Task task=ListData.taskList.get(i);
-            if (task.taskid.equals(taskid)){
-                taskjson= JSON.toJSONString(task);
-                break;
-            }
-        }
-        return taskjson;
-    }
-
-    public static Task getTask(String taskid){
-        Task retTask=null;
-        int nSize= ListData.taskList.size();
-        for(int i=0;i<nSize;i++){
-            Task task=ListData.taskList.get(i);
-            if (task.taskid.equals(taskid)){
-                retTask= task;
-                break;
-            }
-        }
-        return retTask;
-    }
+     */
 
     public static TaskEnd getTaskEnd(String taskid){
-        TaskEnd taskEnd= ListData.endMap.get(taskid);
+        TaskEnd taskEnd= ListData.taskEndMap.get(taskid);
         return taskEnd;
     }
 
-    public static Vector<Task> taskList=new Vector<Task>();
-    public static Vector<Task> jobList=new Vector<Task>();
-
-    public static Map<String, TaskEnd> endMap=new HashMap<String, TaskEnd>();
+    public static void  removeTaskEnd(String taskid){
+        ListData.taskEndMap.remove(taskid);
+    }
+    private static Map<String, TaskEnd> taskEndMap=new HashMap<String, TaskEnd>();
 
     public static CopyOnWriteArraySet<AiSocketServer> wsList= new CopyOnWriteArraySet<AiSocketServer>();
 
